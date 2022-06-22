@@ -1,5 +1,12 @@
-import { GridCellParams, GridColDef, GridRowData, GridValueGetterParams } from '@mui/x-data-grid';
-import Table from 'components/table';
+import {
+	DataGrid,
+	GridCellParams,
+	GridColDef,
+	GridSortModel,
+	GridToolbarContainer,
+	GridToolbarFilterButton,
+	GridValueGetterParams,
+} from '@mui/x-data-grid';
 import { DateTime } from 'luxon';
 import { FC, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -16,14 +23,33 @@ interface Props {
 
 const ListSolicitudes: FC<Props> = ({ listFms }) => {
 	const classes = useStyles();
+
+	const customToolbar: () => JSX.Element = () => {
+		return (
+			<GridToolbarContainer className='m-main-justify m-px-2'>
+				<GridToolbarFilterButton className='m-px-1' />
+			</GridToolbarContainer>
+		);
+	};
 	const [idFM, setIdFM] = useState<number>(0);
 	const [solic, setSolic] = useState<any>(null);
 
-	const getRowId = (row: GridRowData) => row.id;
+	const [sortModel, setSortModel] = useState<GridSortModel>([
+		{
+			field: 'id',
+			sort: 'asc',
+		},
+	]);
 
 	console.log('list', listFms);
 
 	const columns: GridColDef[] = [
+		{
+			field: 'id',
+			headerName: 'N',
+			hide: true,
+			disableColumnMenu: true,
+		},
 		{ field: 'code', headerName: 'Code', type: 'string', width: 150, editable: false },
 		{
 			field: `id_commerce['name']`,
@@ -104,7 +130,21 @@ const ListSolicitudes: FC<Props> = ({ listFms }) => {
 
 	return (
 		<div className={classes.terminales}>
-			<Table doubleClick={DoubleClickTable} columns={columns} rows={listFms} getRowId={getRowId} />
+			<div style={{ height: 500 }}>
+				<DataGrid
+					components={{
+						Toolbar: customToolbar,
+					}}
+					columns={columns}
+					//getRowId={getRowId}
+					sortingOrder={['desc', 'asc']}
+					sortModel={sortModel}
+					onSortModelChange={(model) => setSortModel(model)}
+					rows={listFms}
+					rowsPerPageOptions={[25, 50, 100]}
+					onCellDoubleClick={DoubleClickTable}
+				/>
+			</div>
 			{idFM ? (
 				<FullModal modalOpen={modalOpen} handleClose={handleClose}>
 					<FMContextDataProvider fm={solic}>

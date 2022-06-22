@@ -53,7 +53,7 @@ const TableStatusFM: FC<Props> = ({ status }) => {
 		},
 	];
 
-	console.log(status);
+	//console.log(status);
 
 	return (
 		<div className={classes.terminales}>
@@ -66,8 +66,8 @@ const TableStatusFM: FC<Props> = ({ status }) => {
 					}}
 					columns={columns}
 					hideFooter
-					//getRowId={getRowId}
 					rows={status}
+					//getRowId={getRowId}
 					//rowsPerPageOptions={[25, 50, 100]}
 					//onCellDoubleClick={doubleClick}
 				/>
